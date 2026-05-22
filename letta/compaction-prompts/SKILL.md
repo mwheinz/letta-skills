@@ -10,6 +10,18 @@ Use this skill to inspect, design, and update `compaction_settings.prompt` for a
 
 Compaction runs when message history grows too large for the context window. Letta replaces older messages with a summary while keeping recent messages in context. The summary appears before the remaining recent messages, so the prompt should preserve enough background for the later messages to make sense.
 
+## Compaction lifecycle
+
+Think of compaction as a lifecycle contract, not just a prompt string:
+
+1. Message history approaches the context window limit.
+2. Letta selects messages to compact according to the mode and sliding-window settings.
+3. A summarizer reads the selected messages. If an existing summary is being evicted, the new summary must incorporate it.
+4. Letta reinserts the summary before the retained recent messages.
+5. The next model turn relies on the summary plus recent raw messages as continuation context.
+
+The summary is not a reply to the user. It is context for the next turn. It should be readable before the retained recent messages and should not require access to the evicted transcript.
+
 ## When to customize
 
 Customize compaction settings when the default summary loses important continuity, tone, relationship context, implementation details, or user feedback.
@@ -21,6 +33,19 @@ Common cases:
 - Long-running agents: preserve higher-level goals across repeated compactions by incorporating any existing summary in the transcript.
 
 For complete prompt templates, read [references/prompt-patterns.md](references/prompt-patterns.md).
+
+## Operational checklist
+
+Before changing settings:
+
+1. Inspect current `compaction_settings`, model, and effective context window.
+2. Identify the failure mode: weak prompt, wrong mode, too aggressive `sliding_window_percentage`, too-small `clip_chars`, or summarizer model mismatch.
+3. If possible, review a recent bad summary or the point where continuity was lost.
+4. Draft the replacement prompt with explicit reinsertion and no-continuation instructions.
+5. Run the update script with `--dry-run` and review the PATCH body.
+6. Patch settings only after confirming preserved fields and target agent ID.
+7. Fetch the agent afterward and verify the stored settings.
+8. If possible, observe the next compaction or next turn and check that goals, current task, identifiers, user feedback, and unresolved blockers survived.
 
 ## Compaction fields
 
