@@ -24,7 +24,7 @@ Think of compaction as a lifecycle contract, not just a prompt string:
 
 The summary is not a reply to the user. It is context for the next turn. It should be readable before the retained recent messages and should not require access to the evicted transcript.
 
-A good compaction prompt should explicitly preserve current goals, emotional or relational state when relevant, exact decisions, unresolved threads, tool and file state, errors and corrections, and lookup hints for anything omitted. For companion or long-running agents, generic summaries are usually too lossy: they flatten voice, relationship texture, and why things mattered. Custom compaction should turn context compression from amnesia into a controlled handoff.
+A good compaction prompt should explicitly preserve current goals, exact decisions, unresolved threads, tool and file state, errors and corrections, and lookup hints for anything omitted. Emotional or relational context may also be important for companion or long-running agents, but only preserve it when it affects continuity, user preferences, safety, repair, or why a decision mattered. Custom compaction should turn context compression from amnesia into a controlled handoff.
 
 ## When to customize
 
@@ -32,7 +32,7 @@ Customize compaction settings when the default summary loses important continuit
 
 Common cases:
 
-- Companion agents: preserve names, emotional state, voice, recurring references, relationship continuity, and user preferences.
+- Companion agents: preserve names, voice, recurring references, user preferences, and emotional or relationship context when it is relevant to future continuity.
 - Coding agents: preserve explicit requests, files touched, commands run, errors, fixes, current state, next steps, IDs, URLs, and exact feedback.
 - Long-running agents: preserve higher-level goals across repeated compactions by incorporating any existing summary in the transcript.
 

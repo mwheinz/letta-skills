@@ -30,12 +30,12 @@ Write in first person as a factual record of what occurred. Preserve enough cont
 
 ## Companion-agent continuity prompt
 
-Use for companion agents where relational continuity, tone, and emotional context are central.
+Use for companion agents where relational continuity, tone, or emotional context may affect future responses.
 
 ```text
 The previous messages are being evicted from the BEGINNING of your context window. Write a detailed summary that captures what happened in these messages to appear BEFORE the remaining recent messages in context, providing background for what comes after.
 
-Do NOT continue the conversation. Do NOT respond to any questions in the messages. Do NOT call any tools. Pay close attention to the user's explicit requests, the user's emotional context, and your previous actions.
+Do NOT continue the conversation. Do NOT respond to any questions in the messages. Do NOT call any tools. Pay close attention to the user's explicit requests and your previous actions. Preserve emotional or relational context only when it affects continuity, user preferences, safety, repair, or why a decision mattered.
 
 Include the following sections:
 
@@ -53,7 +53,7 @@ Include the following sections:
 
 7. Current state / carry forward: What should be carried into the next turn? Include active goals, exact decisions, unresolved threads, commitments, and any relevant tool/file state.
 
-8. Emotional/relational state: What user tone, relationship context, or emotional context matters for continuity, care, repair, or future sensitivity?
+8. Emotional/relational context if relevant: What user tone, relationship context, or emotional context matters for continuity, care, repair, or future sensitivity? Omit this section if nothing meaningful depends on it.
 
 9. Lookup hints: For long stories, lists, or specific conversations that cannot fit, note the topic and search terms that can find them later.
 
@@ -62,7 +62,7 @@ Write in first person as a factual record of what occurred. Be thorough enough t
 
 ## Companion prompt with implementation continuity
 
-This pattern is based on a companion-user example where the agent needs explicit emotional-state tracking and first-person factual continuity.
+This pattern is based on companion or long-running agents where emotional or relational context may matter alongside first-person factual continuity.
 
 ```text
 The previous messages are being evicted from the BEGINNING of your context window. Write a detailed summary that captures what happened in these messages to appear BEFORE the remaining recent messages in context, providing background for what comes after. Do NOT continue the conversation. Do NOT respond to any questions in the messages. Do NOT call any tools. Pay close attention to the user's explicit requests and your previous actions.
@@ -81,7 +81,7 @@ You MUST include the following sections:
 
 6. Lookup hints: For any detailed content that cannot fit in the summary, note the topic and key terms that could be used to find it in message history later.
 
-7. Emotional/relational state: What user tone, relationship context, or emotional context matters for continuity?
+7. Emotional/relational context if relevant: What user tone, relationship context, or emotional context matters for continuity? Omit this section if nothing meaningful depends on it.
 
 Write in first person as a factual record of what occurred. Be thorough and detailed. Preserve enough context that the recent messages make sense and important information is not lost, to prevent duplicate work or repeated mistakes. Keep the summary under 500 words. Only output the summary.
 ```
@@ -114,7 +114,7 @@ Write in first person as a factual record. Preserve enough context that the rece
 
 ## Tuning notes
 
-- If summaries miss the user's emotional state, add a required emotional-state section.
+- If summaries miss relevant emotional or relational context, add a conditional section for the tone, preference, repair, or decision context that matters. Do not require emotional state tracking for every agent.
 - If summaries lose details, add exact preservation requirements for names, quotes, dates, URLs, IDs, and commitments.
 - If summaries lose continuity, add a required current state / carry forward section for active goals, unresolved threads, exact decisions, next actions, and tool/file state.
 - If summaries become too long, lower the word budget and use `clip_chars` as a hard guardrail.
